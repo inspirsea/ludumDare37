@@ -574,7 +574,9 @@ webpackJsonp([0],{
 	            case 3: return new model_1.Square(0, 320, 64, 64);
 	            case 15: return new model_1.Square(64, 320, 64, 64);
 	            case 16: return new model_1.Square(0, 320, 64, 64);
-	            case 50: return new model_1.Square(0, 448, 64, 64);
+	            case 50: return new model_1.Square(0, 384, 64, 64);
+	            case 51: return new model_1.Square(64, 384, 64, 64);
+	            case 52: return new model_1.Square(128, 384, 64, 64);
 	            case 100: return new model_1.Square(192, 192, 128, 128);
 	        }
 	    };
@@ -810,8 +812,8 @@ webpackJsonp([0],{
 	        this.spriteSizeY = spriteSizeY;
 	        //this.animate.frames.push(new Point(1, 282));
 	        this.runningAnimation.frames.push(this.textureMapper.mapTexture(50));
-	        this.runningAnimation.frames.push(this.textureMapper.mapTexture(50));
-	        this.runningAnimation.frames.push(this.textureMapper.mapTexture(50));
+	        this.runningAnimation.frames.push(this.textureMapper.mapTexture(51));
+	        this.runningAnimation.frames.push(this.textureMapper.mapTexture(52));
 	    }
 	    Player.prototype.createRenderCall = function () {
 	        var call = new renderCall_1.RenderCall();

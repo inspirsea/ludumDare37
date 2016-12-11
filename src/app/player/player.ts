@@ -39,8 +39,8 @@ export class Player {
 
 		//this.animate.frames.push(new Point(1, 282));
 		this.runningAnimation.frames.push(this.textureMapper.mapTexture(50));
-		this.runningAnimation.frames.push(this.textureMapper.mapTexture(50));
-		this.runningAnimation.frames.push(this.textureMapper.mapTexture(50));
+		this.runningAnimation.frames.push(this.textureMapper.mapTexture(51));
+		this.runningAnimation.frames.push(this.textureMapper.mapTexture(52));
 
 	}
 

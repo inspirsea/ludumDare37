@@ -23,7 +23,9 @@ export class TextureMapper {
 			case 3: return new Square(0, 320, 64, 64);
 			case 15: return new Square(64, 320, 64, 64);
 			case 16: return new Square(0, 320, 64, 64);
-			case 50: return new Square(0, 448, 64, 64);
+			case 50: return new Square(0, 384, 64, 64);
+			case 51: return new Square(64, 384, 64, 64);
+			case 52: return new Square(128, 384, 64, 64);
 			case 100: return new Square(192, 192, 128, 128);
 		}
 	}
