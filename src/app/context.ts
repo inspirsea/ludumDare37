@@ -28,15 +28,18 @@ export class Context
 	private initContext(width: number, height: number) {
 
 		var div = document.createElement("div");
+		var container = document.getElementById("gameContainer");
 
 		this.canvas = document.createElement("canvas");
 		this.canvas.width = width;
 		this.canvas.height = height;
+		div.id = "game";
 		div.style.border = "1px solid #aaa";
-		div.style.display = "inline-block";
+		div.style.display = "block";
+
 
 		div.appendChild(this.canvas);
-		document.body.appendChild(div);
+		container.appendChild(div);
 
 		this.gl = this.canvas.getContext("experimental-webgl");
 

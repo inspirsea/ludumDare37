@@ -46,9 +46,8 @@ export class TileMap {
 		this.tiles[12][20].tileTextureType = 1;
 		this.tiles[13][20].tileTextureType = 1;
 
-		this.tiles[16][25].tileTextureType = 1;
-		this.tiles[17][25].tileTextureType = 1;
-		this.tiles[18][25].tileTextureType = 1;
+		this.tiles[17][20].tileTextureType = 1;
+		this.tiles[18][20].tileTextureType = 1;
 
 		this.tiles[20][25].tileTextureType = 1;
 		this.tiles[21][25].tileTextureType = 1;
@@ -68,14 +67,51 @@ export class TileMap {
 		this.tiles[42][20].tileTextureType = 1;
 		this.tiles[43][20].tileTextureType = 1;
 
-		this.tiles[15][25].tileTextureType = 1;
-		this.tiles[16][25].tileTextureType = 1;
+
 		this.tiles[17][25].tileTextureType = 1;
 		this.tiles[18][25].tileTextureType = 1;
 		this.tiles[19][25].tileTextureType = 1;
 		this.tiles[20][25].tileTextureType = 1;
 		this.tiles[21][25].tileTextureType = 1;
 
+		this.tiles[18][15].tileTextureType = 1;
+		this.tiles[19][15].tileTextureType = 1;
+		this.tiles[20][15].tileTextureType = 1;
+		this.tiles[21][15].tileTextureType = 1;
+
+		this.tiles[25][22].tileTextureType = 1;
+		this.tiles[26][22].tileTextureType = 1;
+		this.tiles[27][22].tileTextureType = 1;
+		this.tiles[28][22].tileTextureType = 1;
+
+
+		this.tiles[25][10].tileTextureType = 1;
+		this.tiles[26][10].tileTextureType = 1;
+		this.tiles[27][10].tileTextureType = 1;
+		this.tiles[28][10].tileTextureType = 1;
+		this.tiles[29][10].tileTextureType = 1;
+		this.tiles[30][10].tileTextureType = 1;
+		this.tiles[31][10].tileTextureType = 1;
+		this.tiles[32][10].tileTextureType = 1;
+
+		this.tiles[34][11].tileTextureType = 1;
+		this.tiles[35][12].tileTextureType = 1;
+		this.tiles[36][13].tileTextureType = 1;
+		this.tiles[37][14].tileTextureType = 1;
+		this.tiles[38][15].tileTextureType = 1;
+
+		this.tiles[10][10].tileTextureType = 1;
+		this.tiles[11][10].tileTextureType = 1;
+		this.tiles[12][10].tileTextureType = 1;
+		this.tiles[13][10].tileTextureType = 1;
+		this.tiles[14][10].tileTextureType = 1;
+
+
+		this.refreshCollidableTiles();
+
+}
+
+	public refreshCollidableTiles() {
 		for(var i = 0; i < this.tiles.length; i++) {
 			for(var j = 0; j < this.tiles[i].length; j++) {
 				if(this.tiles[i][j].tileTextureType != 0 && this.tiles[i][j].tileTextureType != 2) {
@@ -83,8 +119,7 @@ export class TileMap {
 				}
 			}
 		}
-
-}
+	}
 
 	public createRenderCall() {
 		var vertecies: number[] = [];

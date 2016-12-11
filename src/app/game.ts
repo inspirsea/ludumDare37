@@ -56,23 +56,39 @@ export class Game
 
 	    	while ((new Date).getTime() > nextGameTick && loops < maxFrameSkip) {
 	      		//Todo gamelogic update
-	      		this.renderCalls = [];
-						this.collidables.update(this.tileMap.collidableTiles);
-						this.creepingDarkness.update(this.player.repelingDarkness);
-	      		this.collision.checkCollidables(this.player, this.collidables);
-	      		this.checkKeys();
-	      		this.collision.checkIfWallCollision(this.player, this.tileMap, this.tileSizeX);
-	      		this.player.update();
-		      	this.checkSolid();
+						if(this.player.dead == true) {
+							break;
+						}
 
-	      		nextGameTick += skipTicks;
-	      		loops++;
+						this.renderCalls = [];
+
+						if(this.started) {
+							this.tileMap.refreshCollidableTiles();
+							this.collidables.update(this.tileMap.collidableTiles);
+							this.creepingDarkness.update(this.player.repelingDarkness);
+							this.collision.checkCollidables(this.player, this.collidables);
+							this.checkKeys();
+							this.collision.checkIfWallCollision(this.player, this.tileMap, this.tileSizeX);
+							this.player.update();
+							this.checkSolid();
+						}
+
+
+
+						nextGameTick += skipTicks;
+						loops++;
+
 	    	}
 
 	    	if(loops) {
+					if(this.player.dead == true) {
+							this.renderCalls.push(this.player.createDeathCall());
+					} else {
+						this.renderCalls.push(this.player.createRenderCall());
+					}
+
 					this.renderCalls.push(this.collidables.createRenderCall());
 					this.renderCalls.push(this.tileMap.createRenderCall());
-					this.renderCalls.push(this.player.createRenderCall());
 					this.render.render(this.renderCalls);
 	    	}
   		};
@@ -94,7 +110,7 @@ export class Game
 
 	private checkSolid() {
 		var tilesToCheck = this.collision.detectPossibleCollisions(this.player.position, this.tileMap.tiles, this.tileSizeX);
-		let groundCollision = this.collision.checkCollision(tilesToCheck, this.player.getCollisionArea());
+		let groundCollision = this.collision.checkCollision(tilesToCheck, this.player.getCollisionArea(), this.player);
 
 		if(!groundCollision) {
 			this.player.fall();
@@ -102,7 +118,7 @@ export class Game
 			groundCollision = this.player.groundCollision();
 		}
 
-		let wallCollision = this.collision.checkCollision(tilesToCheck, this.player.getCollisionArea());
+		let wallCollision = this.collision.checkCollision(tilesToCheck, this.player.getCollisionArea(), this.player);
 
 		if(wallCollision) {
 			this.player.wallCollision();

@@ -37,16 +37,16 @@ export class Collidables {
 
   public update(tiles: Tile[]) {
     this.updateCount++;
-    if(this.updateCount > 60) {
+    if(this.updateCount > 120) {
         let type = Math.floor(Math.random() * 2) + 15;
 
         let i = this.getUnocupiedPosition(tiles);
 
         if(i >= 0) {
-          if(type == 2) {
-            this.powerUps.push(new PowerUp(tiles[i].x, tiles[i].y - this.powerUpOffset, 20, 20, type));
+          if(type == 15) {
+            this.powerUps.push(new PowerUp(tiles[i].x, tiles[i].y - this.powerUpOffset, 25, 25, type));
           } else {
-            this.powerUps.push(new PowerUp(tiles[i].x, tiles[i].y - this.powerUpOffset, 15, 15, type));
+            this.powerUps.push(new PowerUp(tiles[i].x, tiles[i].y - this.powerUpOffset, 25, 25, type));
           }
         }
 

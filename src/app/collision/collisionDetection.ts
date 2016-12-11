@@ -27,7 +27,7 @@ export class CollisionDetection {
 		return tilesToCheck;
 	}
 
-	public checkCollision(tiles: Tile[], rect: Square) {
+	public checkCollision(tiles: Tile[], rect: Square, player: Player) {
 		var collision = false;
 			for(let tile of tiles) {
 				if(tile.tileTextureType != 0) {
@@ -35,6 +35,10 @@ export class CollisionDetection {
 	   				tile.x + tile.width/2 > rect.x - rect.width/2 &&
 	   				tile.y - tile.height/2 < rect.y + rect.height/2 &&
 	   				tile.y + tile.height/2 > rect.y - rect.height/2) {
+
+						if(tile.tileTextureType == 2) {
+							player.dead = true;
+						}
 
 						collision = true;
 						break;
@@ -52,7 +56,7 @@ export class CollisionDetection {
 		while(wallCollision && i < 10) {
 			i++;
 			var tilesToCheck = this.detectPossibleCollisions(player.position, tileMap.tiles, tileSize);
-			wallCollision = this.checkCollision(tilesToCheck, player.getNextCollisionArea(true));
+			wallCollision = this.checkCollision(tilesToCheck, player.getNextCollisionArea(true), player);
 			if(wallCollision) {
 				player.wallCollision();
 			}

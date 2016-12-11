@@ -1,6 +1,7 @@
 import { Vector, Square, PowerUpCounter, PowerUp } from '../../model';
 import { TextureMapper } from '../render/textureMapper';
 import { RenderCall } from '../render/renderCall';
+import { RenderHelper } from '../render/renderHelper';
 import { Animate } from '../render/animate';
 import { Context } from '../';
 import { Gravity } from '../forces/gravity';
@@ -11,6 +12,7 @@ export class Player {
 	public defaultJumpSpeed: number = -10;
 	public jumpSpeed: number = this.defaultJumpSpeed;
 	public repelingDarkness = false;
+	public dead: boolean = false;
 	private extraJumpSpeed: number = 0;
 	private context: Context;
 	private runningAnimation: Animate = new Animate();
@@ -25,6 +27,7 @@ export class Player {
 	private jumping: boolean = false;
 	private powerUpCounters: PowerUpCounter[] = [];
 	private textureMapper: TextureMapper = TextureMapper.getInstance();
+	private renderHelper: RenderHelper = RenderHelper.getInstance();
 
 	constructor(position: Vector, context: Context, spriteSizeX: number, spriteSizeY: number) {
 		this.position = position;
@@ -179,12 +182,30 @@ export class Player {
 		this.powerUpCounters.push(new PowerUpCounter(powerUp.type))
 	}
 
+	public createDeathCall() {
+		var renderCall: RenderCall = new RenderCall();
+		var vertecies: number[] = [];
+		var textureCoords: number[] = [];
+		var indecies: number[] = [];
+
+		vertecies = this.renderHelper.getVertecies(600, 400, 128, 128, vertecies);
+		textureCoords = this.renderHelper.getTextureCoordinates(textureCoords, 100);
+		indecies = this.renderHelper.getIndecies(indecies);
+
+		renderCall.vertecies = vertecies;
+		renderCall.textureCoords = textureCoords;
+		renderCall.indecies = indecies;
+		renderCall.context = this.context;
+
+		return renderCall;
+	}
+
 	private checkPowerUps() {
 		this.extraJumpSpeed = 0;
 		this.repelingDarkness = false;
 		for(let i = 0; i < this.powerUpCounters.length; i++) {
-			if(this.powerUpCounters[i].type == 1) {
-				this.extraJumpSpeed = 4;
+			if(this.powerUpCounters[i].type == 16) {
+				this.extraJumpSpeed = 3;
 			} else if(this.powerUpCounters[i].type == 15) {
 				this.repelingDarkness = true;
 			}
