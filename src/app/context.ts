@@ -9,7 +9,7 @@ export class Context
 	public canvas: HTMLCanvasElement;
 	public texture: WebGLTexture;
 	private observer: Observer<null>;
-	
+
 
 	constructor(){
 	}
@@ -26,7 +26,7 @@ export class Context
 	}
 
 	private initContext(width: number, height: number) {
-		
+
 		var div = document.createElement("div");
 
 		this.canvas = document.createElement("canvas");
@@ -34,7 +34,7 @@ export class Context
 		this.canvas.height = height;
 		div.style.border = "1px solid #aaa";
 		div.style.display = "inline-block";
-		
+
 		div.appendChild(this.canvas);
 		document.body.appendChild(div);
 
@@ -51,7 +51,7 @@ export class Context
 			this.shaderProgram = this.gl.createProgram();
 			this.gl.attachShader(this.shaderProgram, vertexShader);
 			this.gl.attachShader(this.shaderProgram, fragmentShader);
-			this.gl.linkProgram(this.shaderProgram);		 
+			this.gl.linkProgram(this.shaderProgram);
 			if (!this.gl.getProgramParameter(this.shaderProgram, this.gl.LINK_STATUS)) {
 			 	alert("Unable to initialize the shader program: " + this.gl.getProgramInfoLog(this.shaderProgram));
 			}
@@ -67,14 +67,14 @@ export class Context
   		textureImage.onload = () => {
   			this.handleTextureLoaded(textureImage, this.texture, gl);
   		};
-  		textureImage.src = "/src/texture/tiles.png";
+  		textureImage.src = "/src/texture/sprites.png";
 	}
 
 	private handleTextureLoaded(image: HTMLImageElement, texture: WebGLTexture, gl: WebGLRenderingContext) {
   		gl.bindTexture(gl.TEXTURE_2D, texture);
   		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
-  		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-  		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
+  		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+  		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
   		gl.generateMipmap(gl.TEXTURE_2D);
   		gl.bindTexture(gl.TEXTURE_2D, null);
 

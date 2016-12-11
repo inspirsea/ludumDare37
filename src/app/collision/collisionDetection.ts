@@ -1,5 +1,6 @@
-import { Vector, Tile, Rectangle } from '../../model';
+import { Vector, Tile, Square, PowerUp } from '../../model';
 import { Collision } from './';
+import { Collidables } from '../collidables';
 import { Player } from '../player/player';
 import { TileMap } from '../tileMap';
 
@@ -26,15 +27,15 @@ export class CollisionDetection {
 		return tilesToCheck;
 	}
 
-	public checkCollision(tiles: Tile[], rect: Rectangle) {
+	public checkCollision(tiles: Tile[], rect: Square) {
 		var collision = false;
 			for(let tile of tiles) {
 				if(tile.tileTextureType != 0) {
 					if (tile.x - tile.width/2 < rect.x + rect.width/2 &&
 	   				tile.x + tile.width/2 > rect.x - rect.width/2 &&
 	   				tile.y - tile.height/2 < rect.y + rect.height/2 &&
-	   				tile.y + tile.height/2 > rect.y - tile.height/2) {
-	   					
+	   				tile.y + tile.height/2 > rect.y - rect.height/2) {
+
 						collision = true;
 						break;
 					}
@@ -56,21 +57,25 @@ export class CollisionDetection {
 				player.wallCollision();
 			}
 		}
-		
 
 		return wallCollision;
 	}
 
-	public checkPowerUps(player: Player, tilemap: TileMap, tileSize: number) {
-		var column = Math.floor(player.position.x/tileSize);
-		var row = Math.floor(player.position.y/tileSize);
+	public checkCollidables(player: Player, collidables: Collidables) {
+		var collision = false;
+		var rect = player.getCollisionArea();
+			for(let i = 0; i < collidables.powerUps.length; i++) {
+				if (collidables.powerUps[i].box.x - collidables.powerUps[i].box.width/2 < rect.x + rect.width/2 &&
+					collidables.powerUps[i].box.x + collidables.powerUps[i].box.width/2 > rect.x - rect.width/2 &&
+					collidables.powerUps[i].box.y - collidables.powerUps[i].box.height/2 < rect.y + rect.height/2 &&
+					collidables.powerUps[i].box.y + collidables.powerUps[i].box.height/2 > rect.y - rect.height/2) {
 
-		var tile = tilemap.tiles[column][row + 1];
+					player.addPowerUp(collidables.powerUps[i]);
 
-		if(tile.tileTextureType == 15) {
-			player.jumpSpeed = (player.defaultJumpSpeed * 1.5);
-		} else {
-			player.jumpSpeed = (player.defaultJumpSpeed);
-		}
+					collidables.powerUps.splice(i, 1);
+				}
+			}
+
+		return collision;
 	}
 }

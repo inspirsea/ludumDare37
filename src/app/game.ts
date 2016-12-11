@@ -1,19 +1,22 @@
 import { Context, TileMap, Render } from './';
+import { Collidables } from './collidables';
 import { RenderCall } from './render/renderCall';
-import { Editor } from './editor/editor';
 import { Player } from './player/player';
 import { Vector } from '../model';
 import { CollisionDetection } from './collision/collisionDetection';
 import { Gravity } from './forces/gravity';
+import { CreepingDarkness } from './forces/creepingDarkness';
+
 
 export class Game
 {
 	private fps = 60;
 	private context: Context = new Context();
+	private collidables: Collidables;
 	private tileMap: TileMap = new TileMap();
+	private creepingDarkness =  new CreepingDarkness();
 	private render: Render;
 	private renderCalls: RenderCall[] = [];
-	private editor: Editor = new Editor();
 	private collision: CollisionDetection = new CollisionDetection();
 	private player: Player;
 	private leftKeyPress: boolean;
@@ -25,7 +28,6 @@ export class Game
 
 	constructor() {
 		var doneLoading = this.context.doneListener();
-		var tileEdited = this.editor.tileEdited().subscribe(() => {});
 
 		doneLoading.subscribe(() => {
 			this.render = new Render();
@@ -33,8 +35,9 @@ export class Game
 		});
 
 		this.context.init(1200, 800);
-		this.editor.init(this.tileSizeX, this.tileSizeY, this.context.canvas);
-		this.tileMap.create(this.context, this.editor.tiles);
+		this.collidables = new Collidables(this.context);
+		this.tileMap.create(this.context, this.tileSizeX, this.tileSizeY);
+		this.creepingDarkness.init(this.context, this.tileMap.tiles);
 		this.player = new Player(new Vector(200, 600), this.context, 42, 50);
 	}
 
@@ -47,36 +50,31 @@ export class Game
 		var loops = 0, skipTicks = 1000 / this.fps,
       	maxFrameSkip = 10,
       	nextGameTick = (new Date).getTime();
-  
+
   		return () => {
 	    	loops = 0;
-	    
+
 	    	while ((new Date).getTime() > nextGameTick && loops < maxFrameSkip) {
 	      		//Todo gamelogic update
 	      		this.renderCalls = [];
-
-	      		if(!this.started) {
-	      			if(this.editor.doneLoading) {
-		      			this.renderCalls.push(this.editor.createRenderCall());
-		      		}
-	      			this.renderCalls.push(this.tileMap.createRenderCall(this.editor.tiles));
-	      		} else {
-	      			this.collision.checkPowerUps(this.player, this.tileMap, this.tileSizeX);
-	      			this.checkKeys();
-	      			this.collision.checkIfWallCollision(this.player, this.tileMap, this.tileSizeX);
-	      			this.player.update();
-		      		this.checkSolid();
-	      		}
+						this.collidables.update(this.tileMap.collidableTiles);
+						this.creepingDarkness.update(this.player.repelingDarkness);
+	      		this.collision.checkCollidables(this.player, this.collidables);
+	      		this.checkKeys();
+	      		this.collision.checkIfWallCollision(this.player, this.tileMap, this.tileSizeX);
+	      		this.player.update();
+		      	this.checkSolid();
 
 	      		nextGameTick += skipTicks;
 	      		loops++;
 	    	}
-	    
+
 	    	if(loops) {
-	    		this.renderCalls.push(this.tileMap.createRenderCall(this.editor.tiles));
-				this.renderCalls.push(this.player.createRenderCall());
-				this.render.render(this.renderCalls);
-	    	} 
+					this.renderCalls.push(this.collidables.createRenderCall());
+					this.renderCalls.push(this.tileMap.createRenderCall());
+					this.renderCalls.push(this.player.createRenderCall());
+					this.render.render(this.renderCalls);
+	    	}
   		};
 	}
 
@@ -112,23 +110,23 @@ export class Game
 
 		if(groundCollision && !wallCollision) {
 			this.player.resetJump();
-		}	
+		}
 	}
 
 	private initKeyBindings() {
 
-		document.body.addEventListener("keypress", (event: KeyboardEvent) => {
+		document.body.addEventListener("keydown", (event: KeyboardEvent) => {
 
 		    var keyCode = event.keyCode;
 
 		    switch (keyCode) {
-		    	case 97:
+		    	case 65:
 		    		this.leftKeyPress = true;
 		    		break;
-		    	case 100:
+		    	case 68:
 		    		this.rightKeyPress = true;
 		    		break;
-		    	case 119: 
+		    	case 87:
 		    		this.jumpKeyPress = true;
 		    }
 

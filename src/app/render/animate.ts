@@ -1,8 +1,8 @@
-import { Vector } from '../../model'
+import { Square } from '../../model'
 
 export class Animate {
 
-	public frames: Vector[] = [];
+	public frames: Square[] = [];
 	private frameIndex: number = 0;
 	private frameRenderTimes: number = 0;
 	private frameRenderMaxTimes: number = 4;

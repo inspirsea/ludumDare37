@@ -1,25 +1,92 @@
 import { Tile, Vector } from '../model';
 import { RenderCall } from './render/renderCall';
 import { TextureMapper } from './render/textureMapper';
+import { RenderHelper } from './render/renderHelper';
 import { Context } from './';
 
 export class TileMap {
 	public renderCall: RenderCall = new RenderCall();
 	public tiles: Tile[][] = [];
-	private textureMapper = new TextureMapper();
+	public collidableTiles: Tile[] = [];
 	private context: Context;
+	private tileSizeX: number;
+	private tileSizeY: number;
+	private textureMapper = TextureMapper.getInstance();
+	private renderHelper: RenderHelper = RenderHelper.getInstance();
 
 	constructor() {
 	}
 
-	public create(context: Context, tiles: Tile[][]) {
-		this.tiles = tiles;
+	public create(context: Context, tileSizeX: number, tileSizeY: number) {
 		this.context = context;
 
-		this.createRenderCall(this.tiles);
-	}
+		this.tileSizeX = tileSizeX;
+		this.tileSizeY = tileSizeY;
 
-	public createRenderCall(tiles: Tile[][]) {
+		var columnNumber = this.context.canvas.width / this.tileSizeX;
+		var rowNumber = this.context.canvas.height / this.tileSizeY;
+
+		for(var i = 0; i < columnNumber; i++) {
+			this.tiles[i] = [];
+			for(var j = 0; j < rowNumber; j++) {
+				this.tiles[i][j] = new Tile((tileSizeX * i) + (tileSizeX / 2), (tileSizeY * j) + (tileSizeY / 2), tileSizeX, tileSizeY, 0);
+			}
+		}
+
+		this.tiles[7][28].tileTextureType = 1;
+		this.tiles[8][28].tileTextureType = 1;
+		this.tiles[9][28].tileTextureType = 1;
+
+		this.tiles[12][28].tileTextureType = 1;
+		this.tiles[13][28].tileTextureType = 1;
+
+		this.tiles[7][20].tileTextureType = 1;
+		this.tiles[8][20].tileTextureType = 1;
+
+		this.tiles[12][20].tileTextureType = 1;
+		this.tiles[13][20].tileTextureType = 1;
+
+		this.tiles[16][25].tileTextureType = 1;
+		this.tiles[17][25].tileTextureType = 1;
+		this.tiles[18][25].tileTextureType = 1;
+
+		this.tiles[20][25].tileTextureType = 1;
+		this.tiles[21][25].tileTextureType = 1;
+
+		this.tiles[27][28].tileTextureType = 1;
+		this.tiles[28][28].tileTextureType = 1;
+
+		this.tiles[31][28].tileTextureType = 1;
+		this.tiles[32][28].tileTextureType = 1;
+		this.tiles[33][28].tileTextureType = 1;
+
+		this.tiles[37][20].tileTextureType = 1;
+		this.tiles[38][20].tileTextureType = 1;
+		this.tiles[39][20].tileTextureType = 1;
+		this.tiles[40][20].tileTextureType = 1;
+		this.tiles[41][20].tileTextureType = 1;
+		this.tiles[42][20].tileTextureType = 1;
+		this.tiles[43][20].tileTextureType = 1;
+
+		this.tiles[15][25].tileTextureType = 1;
+		this.tiles[16][25].tileTextureType = 1;
+		this.tiles[17][25].tileTextureType = 1;
+		this.tiles[18][25].tileTextureType = 1;
+		this.tiles[19][25].tileTextureType = 1;
+		this.tiles[20][25].tileTextureType = 1;
+		this.tiles[21][25].tileTextureType = 1;
+
+		for(var i = 0; i < this.tiles.length; i++) {
+			for(var j = 0; j < this.tiles[i].length; j++) {
+				if(this.tiles[i][j].tileTextureType != 0 && this.tiles[i][j].tileTextureType != 2) {
+					this.collidableTiles.push(this.tiles[i][j]);
+				}
+			}
+		}
+
+}
+
+	public createRenderCall() {
 		var vertecies: number[] = [];
 		var textureCoords: number[] = [];
 		var indecies: number[] = [];
@@ -27,9 +94,9 @@ export class TileMap {
 		for(var i = 0; i < this.tiles.length; i++) {
 			for(var j = 0; j < this.tiles[i].length; j++) {
 				if(this.tiles[i][j].tileTextureType != 0) {
-					vertecies = this.getVertecies(this.tiles[i][j].x, this.tiles[i][j].y, this.tiles[i][j].width, this.tiles[i][j].height, vertecies);
-					textureCoords = this.getTextureCoordinates(textureCoords, this.tiles[i][j].tileTextureType);
-					indecies = this.getIndecies(indecies);
+					vertecies = this.renderHelper.getVertecies(this.tiles[i][j].x, this.tiles[i][j].y, this.tiles[i][j].width, this.tiles[i][j].height, vertecies);
+					textureCoords = this.renderHelper.getTextureCoordinates(textureCoords, this.tiles[i][j].tileTextureType);
+					indecies = this.renderHelper.getIndecies(indecies);
 				}
 			}
 		}
@@ -42,56 +109,4 @@ export class TileMap {
 		return this.renderCall;
 	}
 
-	private getVertecies(x: number, y: number, width: number, height:number, currentVertecies: number[]) {
-
-		var x1 = x - (width / 2);
-  		var x2 = x + (width / 2);
-  		var y1 = y - (height / 2);
-  		var y2 = y + (height / 2);
-
-  		var newVertecies = [
-     		x1, y1,
-     		x2, y2,
-     		x2, y1,
-     		x1, y1,
-     		x2, y2,
-     		x1, y2
-     		]
-
-     	currentVertecies.push.apply(currentVertecies, newVertecies);
-
-     	return currentVertecies;
-	}
-
-	private getIndecies(currentIndecies: number[]) {
-
-		var vertexIndices = [
-    		currentIndecies.length,  currentIndecies.length + 1,  currentIndecies.length + 2, currentIndecies.length + 3,  currentIndecies.length + 4,  currentIndecies.length + 5
-  		];
-
-		currentIndecies.push.apply(currentIndecies, vertexIndices);
-
-     	return currentIndecies;
-	}
-
-	private getTextureCoordinates(currentTextureCoordinates: number[], textureType: number) {
-		
-		var point = this.textureMapper.mapTexture(textureType);
-
-		let x: number = point.x;
-		let y: number = point.y;
-
-		var textureCoordinates = [
-			(0.1 * x),  (0.1 * y),
-		    (0.1 * (x + 1)),  (0.1 * (y + 1)),
-		    (0.1 * (x + 1)),  (0.1 * y),
-		    (0.1 * x),  (0.1 * y),
-		    (0.1 * (x + 1)),  (0.1 * (y + 1)),
-		    (0.1 * x),  (0.1 * (y + 1)),
-		];
-
-		currentTextureCoordinates.push.apply(currentTextureCoordinates, textureCoordinates);
-
-     	return currentTextureCoordinates;
-	}
 }
