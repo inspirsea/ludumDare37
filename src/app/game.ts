@@ -25,6 +25,8 @@ export class Game
 	private tileSizeX: number = 25;
 	private tileSizeY: number = 25;
 	private started: boolean = false;
+	private startTime: number = 0;
+	private timeElement: HTMLElement;
 
 	constructor() {
 		var doneLoading = this.context.doneListener();
@@ -91,6 +93,11 @@ export class Game
 					this.renderCalls.push(this.collidables.createRenderCall());
 					this.renderCalls.push(this.tileMap.createRenderCall());
 					this.render.render(this.renderCalls);
+
+					if(this.started) {
+						this.timeElement.innerHTML = ((Date.now() - this.startTime)/1000).toString();
+					}
+					
 	    	}
   		};
 	}
@@ -168,8 +175,16 @@ export class Game
 		});
 
 		document.getElementById("start").addEventListener("click", (event: MouseEvent) => {
+			if(this.started == false) {
+				this.startTime = Date.now();
+			}
 			this.started = true;
 		});
 
+		document.getElementById("restart").addEventListener("click", (event: MouseEvent) => {
+			this.started = false;
+		});
+
+		this.timeElement = document.getElementById("time");
 	}
 }

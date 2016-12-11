@@ -14,17 +14,26 @@ export class CollisionDetection {
 		var row = Math.floor(position.y/tileSize);
 
 		var tilesToCheck: Tile[] = [];
-		tilesToCheck.push(tiles[column-1][row + 1]);
-		tilesToCheck.push(tiles[column][row + 1]);
-		tilesToCheck.push(tiles[column+1][row + 1]);
-		tilesToCheck.push(tiles[column-1][row]);
-		tilesToCheck.push(tiles[column][row]);
-		tilesToCheck.push(tiles[column+1][row]);
-		tilesToCheck.push(tiles[column-1][row - 1]);
-		tilesToCheck.push(tiles[column][row - 1]);
-		tilesToCheck.push(tiles[column+1][row - 1]);
+
+		this.pushNull(tiles[column-1][row + 1], tilesToCheck);
+
+		this.pushNull(tiles[column-1][row + 1], tilesToCheck);
+		this.pushNull(tiles[column][row + 1], tilesToCheck);
+		this.pushNull(tiles[column+1][row + 1], tilesToCheck);
+		this.pushNull(tiles[column-1][row], tilesToCheck);
+		this.pushNull(tiles[column][row], tilesToCheck);
+		this.pushNull(tiles[column+1][row], tilesToCheck);
+		this.pushNull(tiles[column-1][row - 1], tilesToCheck);
+		this.pushNull(tiles[column][row - 1], tilesToCheck);
+		this.pushNull(tiles[column+1][row - 1], tilesToCheck);
 
 		return tilesToCheck;
+	}
+
+	private pushNull(tile: Tile, tilesToCheck: Tile[]) {
+		if(tile != null) {
+			tilesToCheck.push(tile);
+		}
 	}
 
 	public checkCollision(tiles: Tile[], rect: Square, player: Player) {
@@ -56,6 +65,11 @@ export class CollisionDetection {
 		while(wallCollision && i < 10) {
 			i++;
 			var tilesToCheck = this.detectPossibleCollisions(player.position, tileMap.tiles, tileSize);
+
+			if(tilesToCheck.length <= 0) {
+				player.dead = true;
+			}
+
 			wallCollision = this.checkCollision(tilesToCheck, player.getNextCollisionArea(true), player);
 			if(wallCollision) {
 				player.wallCollision();
