@@ -69,7 +69,7 @@ export class Context
   		textureImage.onload = () => {
   			this.handleTextureLoaded(textureImage, this.texture, gl);
   		};
-  		textureImage.src = "/src/texture/sprites.png";
+  		textureImage.src = "/assets/sprites.png";
 	}
 
 	private handleTextureLoaded(image: HTMLImageElement, texture: WebGLTexture, gl: WebGLRenderingContext) {
