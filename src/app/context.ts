@@ -34,7 +34,6 @@ export class Context
 		this.canvas.width = width;
 		this.canvas.height = height;
 		div.id = "game";
-		div.style.border = "1px solid #aaa";
 		div.style.display = "block";
 
 
@@ -81,8 +80,9 @@ export class Context
   		gl.generateMipmap(gl.TEXTURE_2D);
   		gl.bindTexture(gl.TEXTURE_2D, null);
 
+			gl.clearColor(1, 1, 1, 1);
   		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-		gl.enable(gl.BLEND);
+			gl.enable(gl.BLEND);
 
   		this.observer.next(null);
 	}

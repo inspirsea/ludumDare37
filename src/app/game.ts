@@ -81,6 +81,7 @@ export class Game
 	    	}
 
 	    	if(loops) {
+					this.context.gl.clear(this.context.gl.DEPTH_BUFFER_BIT | this.context.gl.COLOR_BUFFER_BIT);
 					if(this.player.dead == true) {
 							this.renderCalls.push(this.player.createDeathCall());
 					} else {
